@@ -77,6 +77,9 @@ class Settings:
     def __iter__(self):
         return iter(self.keys())
 
+    def sync(self):
+        self._engine.sync()
+
 
 def _as_string(obj):
     if obj is None or type(obj) in (int, bytes):

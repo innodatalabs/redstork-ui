@@ -20,5 +20,5 @@ class SettingsPresenter:
     def _onClosing(self):
         self._settings['mainState'] = self._mainView.saveState().data()
         self._settings['mainGeometry'] = self._mainView.saveGeometry().data()
-        self._settings._engine.sync()  # FIXME
+        self._settings.sync()
 
