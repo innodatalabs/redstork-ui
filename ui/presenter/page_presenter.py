@@ -1,9 +1,10 @@
-
 import trio
 import triq
 from ui import qtx
 from ..render import render
 import tempfile
+import os
+import contextlib
 
 
 class PdfPageModel:
@@ -23,9 +24,9 @@ class PdfPageModel:
         return transform
 
     async def render_at(self, scale):
-        with tempfile.NamedTemporaryFile() as f:
-            await render(self._pool, self._pdf_name, self._page_index, f.name, scale)
-            image =  qtx.QImage(f.name)
+        with temp_file_name_with_auto_remove(suffix='.ppm') as name:
+            await render(self._pool, self._pdf_name, self._page_index, name, scale)
+            image =  qtx.QImage(name)
             image = desaturate_image(image)
             return image
 
@@ -139,3 +140,13 @@ class PagePresenter:
         if self._project is not None:
             self._rotation = (self._rotation + 3) % 4
             self._view.rotation = self._rotation
+
+
+@contextlib.contextmanager
+def temp_file_name_with_auto_remove(prefix='', suffix=''):
+    dir_ = tempfile.gettempdir()
+    name = os.path.join(dir_, prefix + os.urandom(32).hex() + suffix)
+    try:
+        yield name
+    finally:
+        os.unlink(name)

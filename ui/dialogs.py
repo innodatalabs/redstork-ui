@@ -91,13 +91,11 @@ class Dialogs:
         '''
 
         if mask:
-            masks = mask + ';;All files (*.*)'
+            masks = mask + ', All files (*.*)'
             initial_mask = masks
         else:
             masks = 'All files (*.*)'
             initial_mask = masks
-
-        print(initial_mask)
 
         while True:
             file_name, _ = qtx.QFileDialog.getOpenFileName(
